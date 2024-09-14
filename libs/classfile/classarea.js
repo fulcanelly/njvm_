@@ -60,7 +60,7 @@ var getClassImage = function(classBytes) {
 
     var classImage = {};
         
-    var getAttributes = function(attribute_name_index, bytes) {
+    var getAttribues = function(attribute_name_index, bytes) {
             
         var reader = new Reader.create(bytes);
         var attribute = { attribute_name_index: attribute_name_index };
@@ -172,10 +172,20 @@ var getClassImage = function(classBytes) {
                 var bytes = reader.readString(length);
                 classImage.constant_pool.push( { tag: tag, bytes: bytes } );
                 break;
+            case TAGS.CONSTANT_Methodref:
+                var class_index = reader.read16();
+                var name_and_type_index = reader.read16();
+                classImage.constant_pool.push( {  tag: tag, class_index: class_index, name_and_type_index: name_and_type_index } );
+                break;
             case TAGS.CONSTANT_NameAndType:
                 var name_index = reader.read16();
                 var signature_index = reader.read16();
                 classImage.constant_pool.push( { tag: tag, name_index: name_index,  signature_index: signature_index } );                
+                break;
+            case TAGS.CONSTANT_Fieldref:
+                var class_index = reader.read16();
+                var name_and_type_index = reader.read16();
+                classImage.constant_pool.push( { tag: tag, class_index: class_index,  name_and_type_index: name_and_type_index } );                                
                 break;
             case TAGS.CONSTANT_String:
                 var string_index = reader.read16();
@@ -268,7 +278,7 @@ var getClassImage = function(classBytes) {
         for(var j=0; j <attributes_count; j++) {
             var attribute_name_index = reader.read16();
             var attribute_length = reader.read32();
-            var info = getAttributes(attribute_name_index, reader.readBytes(attribute_length));
+            var info = getAttribues(attribute_name_index, reader.readBytes(attribute_length));            
             var attribute = {
                 attribute_name_index: attribute_name_index,
                 attribute_length: attribute_length,
@@ -286,7 +296,7 @@ var getClassImage = function(classBytes) {
     for(var i=0; i<attributes_count; i++) {
             var attribute_name_index = reader.read16();
             var attribute_length = reader.read32();
-            var info = getAttributes(attribute_name_index, reader.readBytes(attribute_length));
+            var info = getAttribues(attribute_name_index, reader.readBytes(attribute_length));            
             var attribute = {
                 attribute_name_index: attribute_name_index,
                 attribute_length: attribute_length,
