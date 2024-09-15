@@ -9,7 +9,10 @@ var Numeric = require("./util/numeric");
 var Signature = require("./classfile/signature");
 
 var TAGS = require("./classfile/tags");
-var ATTRIBUTE_TYPES = require("./classfile/attributetypes");
+var { ATTRIBUTE_TYPES } = require("./classfile/attributetypes");
+const { SCHEDULER, CLASSES } = require("./global");
+const { OPCODES } = require('./opcodes');
+
 
 var Frame = module.exports = function(classArea, method) {
     if (this instanceof Frame) {

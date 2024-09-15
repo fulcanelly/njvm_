@@ -12,7 +12,7 @@ import ACCESS_FLAGS from "./accessflags.js"
 
 import { ATTRIBUTE_TYPES } from "./attributetypes.js"
 
-import { Buffer } from 'buffer/'
+// import { Buffer } from 'buffer/'
 import { Reader } from "../util/reader.js"
 
 export class ClassArea {

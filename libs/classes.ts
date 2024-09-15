@@ -12,7 +12,11 @@ import Frame from "./frame";
 
 import ACCESS_FLAGS from "./classfile/accessflags";
 import { LOG, SCHEDULER } from "./global";
-
+import Integer from "./java/lang/Integer";
+import * as R from 'ramda'
+import System from "./java/lang/System";
+import { PrintStream } from "./java/io/PrintStream";
+import { StringBuilder } from "./java/lang/StringBuilder";
 
 
 export class Classes {
@@ -142,14 +146,49 @@ export class Classes {
     this.staticFields[className + '.' + fieldName] = value;
   }
 
+  static CLASS_MAPPING = {
+    java: {
+      io: {
+        PrintStream
+      },
+      lang: {
+        Integer,
+        System,
+        StringBuilder
+      }
+    }
+  }
 
   getClass(className: string) {
+
+    // console.log(className)
     var ca = this.classes[className];
     if (ca) {
       return ca;
     }
+
+    const path = className.split("/")
+
+    const klass = R.path(path, Classes.CLASS_MAPPING)
+    if (klass) {
+      this.classes[className] = klass
+      return klass
+    }
+    console.log({
+      path, klass
+    })
+
     for (var i = 0; i < this.paths.length; i++) {
-      throw new Error("not implemented")
+      const path = this.paths[i].split("/")
+      const klass = R.path(path, Classes.CLASS_MAPPING)
+      console.log({
+        path, klass
+      })
+      if (!klass) {
+        throw new Error("not implemented")
+
+      }
+      return klass
       // var fileName = util.format("%s/%s", this.paths[i], className);
       // if (fs.existsSync(fileName + ".js")) {
       //   return this.loadJSFile(fileName + ".js");
@@ -163,7 +202,7 @@ export class Classes {
 
 
 
-  getEntryPoint(className: string, methodName: string) {
+  getEntryPoint(className: string, methodName: string): any {
     for (var name in this.classes) {
       var ca = this.classes[name];
       if (ca instanceof ClassArea) {
@@ -177,7 +216,12 @@ export class Classes {
                 ACCESS_FLAGS.isPublic(methods[i].access_flags) &&
                 ACCESS_FLAGS.isStatic(methods[i].access_flags) &&
                 cp[methods[i].name_index].bytes === methodName
-              ) { return new Frame(ca, methods[i]); }
+              ) {
+                console.log({
+                  ca, me: methods[i]
+                })
+                return new Frame(ca, methods[i]);
+              }
             }
           }
         }
@@ -187,6 +231,8 @@ export class Classes {
 
 
 }
+
+
 
 
 // }

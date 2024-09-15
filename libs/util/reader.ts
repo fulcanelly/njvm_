@@ -2,7 +2,7 @@
  node-jvm
  Copyright (c) 2013 Yaroslav Gaponov <yaroslav.gaponov@gmail.com>
 */
-import { Buffer } from 'buffer/'
+// import { Buffer } from 'buffer/'
 
 
 export class Reader {
