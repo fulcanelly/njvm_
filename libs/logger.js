@@ -6,54 +6,47 @@
 var util = require("util");
 
 var LEVELS = {
-    DEBUG: 1 << 0,
-    ERROR: 1 << 1,
-    INFO: 1 << 2,
-    WARN: 1 << 3,
-    check: function (levels, level) {
+    DEBUG:  1<<0,
+    ERROR:  1<<1,
+    INFO:   1<<2,
+    WARM:   1<<3,
+    check: function(levels, level) {
         return (levels & level) === level;
     }
 };
 
-var LOG = Object.freeze({
-    debug: console.debug || util.debug || console.log,
-    error: console.error || util.error || console.log,
-    info: console.info || util.print || console.log,
-    warn: console.warn || util.print || console.log
-});
-
-var Logger = module.exports = function (levels) {
+var Logger = module.exports = function(levels) {
     if (this instanceof Logger) {
-        this.levels = levels || (LEVELS.DEBUG | LEVELS.ERROR | LEVELS.INFO | LEVELS.WARN);
+        this.levels = levels || ( LEVELS.DEBUG | LEVELS.ERROR | LEVELS.INFO | LEVELS.WARM );
     } else {
         return new Logger(levels);
     }
-};
+}
 
-Logger.prototype.setLogLevel = function (levels) {
+Logger.prototype.setLogLevel = function(levels) {
     this.levels = levels;
 }
 
-Logger.prototype.debug = function (msg) {
+Logger.prototype.debug = function(msg) {
     if (LEVELS.check(this.levels, LEVELS.DEBUG)) {
-        LOG.debug(msg);
+        util.debug(msg);
     }
 }
 
-Logger.prototype.error = function (msg) {
+Logger.prototype.error = function(msg) {
     if (LEVELS.check(this.levels, LEVELS.ERROR)) {
-        LOG.error(msg);
+        util.error(msg);
     }
 }
 
-Logger.prototype.info = function (msg) {
+Logger.prototype.info = function(msg) {
     if (LEVELS.check(this.levels, LEVELS.INFO)) {
-        LOG.info("INFO: " + msg);
+        util.print("INFO: " + msg);
     }
 }
 
-Logger.prototype.warn = function (msg) {
-    if (LEVELS.check(this.levels, LEVELS.WARN)) {
-        LOG.warn("WARN: " + msg);
+Logger.prototype.warn = function(msg) {
+    if (LEVELS.check(this.levels, LEVELS.WARM)) {
+        util.print("WARN: " + msg);
     }
 }
