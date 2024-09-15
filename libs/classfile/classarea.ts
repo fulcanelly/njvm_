@@ -12,23 +12,23 @@ import ACCESS_FLAGS from "./accessflags.js"
 
 import { ATTRIBUTE_TYPES } from "./attributetypes.js"
 
-// import { Buffer } from 'buffer/'
+import { Buffer } from 'buffer/'
 import { Reader } from "../util/reader.js"
 
 export class ClassArea {
 
-  classImage
+  classImage: classImage
 
   constructor(classBytes) {
     this.classImage = getClassImage(classBytes);
   }
 
   getClassName() {
-    return this.classImage.constant_pool[this.classImage.constant_pool[this.classImage.this_class].name_index].bytes;
+    return this.classImage.constant_pool![this.classImage.constant_pool![this.classImage.this_class!].name_index].bytes;
   }
 
   getSuperClassName() {
-    return this.classImage.constant_pool[this.classImage.constant_pool[this.classImage.super_class].name_index].bytes;
+    return this.classImage.constant_pool![this.classImage.constant_pool![this.classImage.super_class!].name_index].bytes;
   }
 
   getAccessFlags() {
@@ -51,11 +51,11 @@ export class ClassArea {
   getClasses() {
     const self = this;
     var classes: any[] = [];
-    this.classImage.attributes.forEach(function (a) {
-      if (a.info.type === ATTRIBUTE_TYPES.InnerClasses) {
-        a.info.classes.forEach(function (c) {
-          classes.push(self.classImage.constant_pool[self.classImage.constant_pool[c.inner_class_info_index].name_index].bytes);
-          classes.push(self.classImage.constant_pool[self.classImage.constant_pool[c.outer_class_info_index].name_index].bytes);
+    this.classImage.attributes!.forEach(function (a) {
+      if ((a.info! as any).type === ATTRIBUTE_TYPES.InnerClasses) {
+        (a.info! as any).classes.forEach(function (c) {
+          classes.push(self.classImage.constant_pool![self.classImage.constant_pool![c.inner_class_info_index].name_index].bytes);
+          classes.push(self.classImage.constant_pool![self.classImage.constant_pool![c.outer_class_info_index].name_index].bytes);
         });
       }
     });
@@ -79,13 +79,15 @@ type classImage = {
   this_class?: number,
   super_class?: number,
   methods?: MethodInfo[],
-  attributes?: ClassAtr[]
+  attributes?: GenericAttr[]
 }
 
 type ClassAtr = {
   attribute_name_index: any;
   attribute_length: any;
   info: {
+    type: any,
+    classes: any
     attribute_name_index: any;
   };
 }
@@ -129,12 +131,12 @@ type EsceptionTable = {
 }
 
 type CodeAttr = {
-  attribute_name_index: number
-  attribute_length: number
+  /*TODO maybe error???*/
+  // attribute_name_index?: number
+  // attribute_length?: number
   info
 }
 
-declare type X = {}
 
 type InnerClassAtr = {
   inner_class_info_index?: number
@@ -155,10 +157,12 @@ type GenericAttr = {
 
   code?: any
 
+  attribute_length?: number
+  info?: Buffer
 
   exception_index_table?: number[]
 
-  attributes?: CodeAttr[]
+  attributes?: GenericAttr[]
   exception_table?: EsceptionTable[]
 
   classes?: InnerClassAtr[]
@@ -423,7 +427,7 @@ var getClassImage = function (classBytes) {
       attribute_length: attribute_length,
       info: info
     }
-    classImage.attributes.push(attribute);
+    classImage.attributes.push(attribute as any);
   }
 
   return classImage;

@@ -41,6 +41,11 @@ export class JVM  {
   }
 
   run(args: any[]) {
+
+    console.log({
+      args
+    })
+
     var self = this;
 
     CLASSES.clinit();

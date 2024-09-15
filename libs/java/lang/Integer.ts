@@ -11,6 +11,7 @@ export class Integer {
   }
 
   static parseInt(...args: Parameters<typeof parseInt>): number {
+    // caasdfsad
     return parseInt(...args);
   }
 

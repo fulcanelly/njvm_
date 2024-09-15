@@ -8,7 +8,7 @@
 // var path = require("path");
 
 import { ClassArea } from "./classfile/classarea";
-import Frame from "./frame";
+import {Frame} from "./frame";
 
 import ACCESS_FLAGS from "./classfile/accessflags";
 import { LOG, SCHEDULER } from "./global";
@@ -63,7 +63,7 @@ export class Classes {
     // return classArea;
   }
 
-  newException(className: string, message: string, cause: string) {
+  newException(className: string, message?: string, cause?: string) {
     var ex = this.newObject(className);
     ex["<init>"](message, cause);
     return ex;
@@ -79,14 +79,14 @@ export class Classes {
 
       o.getClassName = () => className
 
-      var cp = ca.getConstantPool();
+      var cp = ca.getConstantPool()!;
 
-      ca.getFields().forEach(function (field) {
+      ca.getFields()!.forEach(function (field) {
         var fieldName = cp[field.name_index].bytes;
         o[fieldName] = null;
       });
 
-      ca.getMethods().forEach(function (method) {
+      ca.getMethods()!.forEach(function (method) {
         var methodName = cp[method.name_index].bytes;
         o[methodName] = new Frame(ca, method);
       });
@@ -102,8 +102,9 @@ export class Classes {
   getMethod(className: string, methodName: string, signature: string) {
     var ca = this.getClass(className);
     if (ca instanceof ClassArea) {
-      var methods = ca.getMethods();
-      var cp = ca.getConstantPool();
+      var methods = ca.getMethods()!;
+      var cp = ca.getConstantPool()!;
+
       for (var i = 0; i < methods.length; i++)
         if (!ACCESS_FLAGS.isStatic(methods[i].access_flags))
           if (cp[methods[i].name_index].bytes === methodName)
@@ -121,8 +122,9 @@ export class Classes {
   getStaticMethod(className: string, methodName: string, signature: string) {
     var ca = this.getClass(className);
     if (ca instanceof ClassArea) {
-      var methods = ca.getMethods();
-      var cp = ca.getConstantPool();
+      var methods = ca.getMethods()!;
+      var cp = ca.getConstantPool()!;
+
       for (var i = 0; i < methods.length; i++)
         if (ACCESS_FLAGS.isStatic(methods[i].access_flags))
           if (cp[methods[i].name_index].bytes === methodName)
@@ -202,14 +204,15 @@ export class Classes {
 
 
 
-  getEntryPoint(className: string, methodName: string): any {
+  getEntryPoint(className: string, methodName: string): Frame {
     for (var name in this.classes) {
       var ca = this.classes[name];
       if (ca instanceof ClassArea) {
         if (!className || (className === ca.getClassName())) {
           if (ACCESS_FLAGS.isPublic(ca.getAccessFlags())) {
-            var methods = ca.getMethods();
-            var cp = ca.getConstantPool();
+            var methods = ca.getMethods()!;
+            var cp = ca.getConstantPool()!;
+
             for (var i = 0; i < methods.length; i++) {
               if
                 (
@@ -217,9 +220,9 @@ export class Classes {
                 ACCESS_FLAGS.isStatic(methods[i].access_flags) &&
                 cp[methods[i].name_index].bytes === methodName
               ) {
-                console.log({
-                  ca, me: methods[i]
-                })
+                // console.log({
+                //   ca, me: methods[i]
+                // })
                 return new Frame(ca, methods[i]);
               }
             }
@@ -227,6 +230,8 @@ export class Classes {
         }
       }
     }
+
+    throw new Error("WH")
   }
 
 
