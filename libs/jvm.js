@@ -56,6 +56,9 @@ JVM.prototype.loadClassFile = function(fileName) {
     return CLASSES.loadClassFile(fileName);
 }
 
+JVM.prototype.loadClassBytes = (data) => 
+    CLASSES.loadClassBytes(data)
+
 JVM.prototype.loadClassFiles = function(dirName) {
     var self = this;
     CLASSES.addPath(dirName);
