@@ -15,16 +15,19 @@ var out = module.exports = function() {
 out.getClassName = function() {
     return "java/io/PrintStream";
 }
- 
+
+//TODO
+
 out.prototype["print"] = function() {
-    util.print.apply(null, arguments);
+    console.log({arguments})
 };
 
 out.prototype["println"] = function() {
-    util.print.apply(null, arguments);
-    util.print("\n");
+    console.log({arguments})
+
 };
 
 out.prototype["format"] = function(fmt, args) {
-    util.print(util.format.apply(null, [fmt].concat(args)));
+    console.log({arguments})
 }
+
