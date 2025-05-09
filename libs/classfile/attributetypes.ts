@@ -1,10 +1,6 @@
-/*
- node-jvm
- Copyright (c) 2013 Yaroslav Gaponov <yaroslav.gaponov@gmail.com>
-*/
 
-var ATTRIBUTE_TYPES = module.exports = {
-    ConstantValue:  "ConstantValue",
+export const ATTRIBUTE_TYPES: { [k in string]: keyof typeof ATTRIBUTE_TYPES } = {
+    ConstantValue: "ConstantValue",
     Code: "Code",
     Exceptions: "Exceptions",
     InnerClasses: "InnerClasses",
